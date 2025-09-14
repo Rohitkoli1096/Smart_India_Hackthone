@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Safe Route Lite</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      background-color: #0f172a;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #1e293b;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 20px #1e40af;
+    }
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      width: 60px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #60a5fa;
+    }
+    .tab-switch {
+      display: flex;
+      background-color: #0f172a;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .tab-switch button {
+      flex: 1;
+      padding: 10px 0;
+      background: none;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+    .tab-switch button.active {
+      background: linear-gradient(to right, #3b82f6, #6366f1);
+      color: white;
+    }
+    .toggle-input {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .toggle-input button {
+      background-color: #1e293b;
+      color: #9ca3af;
+      padding: 8px 20px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .toggle-input button.active {
+      background-color: #1e3a8a;
+      color: #fff;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #334155;
+      color: white;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #3b82f6, #6366f1);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      position: absolute;
+      width: 40%;
+      height: 1px;
+      background-color: #334155;
+      top: 50%;
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+    .divider span {
+      background-color: #1e293b;
+      padding: 0 10px;
+    }
+    .google-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #111827;
+      color: white;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .google-btn img {
+      width: 20px;
+      margin-right: 10px;
+    }
+    .forgot {
+      text-align: right;
+      font-size: 0.9em;
+      margin-top: -8px;
+      margin-bottom: 15px;
+    }
+    .forgot a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    .hidden {
+      display: none;
+    }
+
+    /* Toast Styles */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(to right, #3b82f6, #6366f1);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease, bottom 0.3s ease;
+      z-index: 9999;
+    }
+    .toast.show {
+      opacity: 1;
+      bottom: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="">
+    <div class="logo">
+      <img src="https://img.icons8.com/ios-filled/100/ffffff/security-shield-green.png" alt="logo" />
+    </div>
+    <h2>Safe Route Lite</h2>
+
+    <div class="tab-switch">
+      <button id="loginTab" class="active" onclick="switchTab('login')">Login</button>
+      <button id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <div class="toggle-input">
+      <button id="emailToggle" class="active" onclick="toggleMethod('email')">📧 Email</button>
+      <button id="phoneToggle" onclick="toggleMethod('phone')">📞 Phone</button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <input type="text" id="loginIdentifier" placeholder="Enter your email or phone" />
+      <input type="password" id="loginPassword" placeholder="Enter your password" />
+      <div class="forgot"><a href="#">Forgot password?</a></div>
+      <button class="btn-primary" onclick="loginUser()">Sign In</button>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signupForm" class="hidden">
+      <input type="text" id="signupName" placeholder="Enter your full name" />
+      <input type="text" id="signupIdentifier" placeholder="Enter your email or phone" />
+      <input type="password" id="signupPassword" placeholder="Enter your password" />
+      <input type="password" id="signupConfirm" placeholder="Confirm your password" />
+      <button class="btn-primary" onclick="registerUser()">Create Account</button>
+    </div>
+
+    <div class="divider"><span>or</span></div>
+    <button class="google-btn"><img src="https://img.icons8.com/color/48/000000/google-logo.png" />Continue with Google</button>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script>
+    let currentTab = 'login';
+    let method = 'email';
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById("loginTab").classList.remove("active");
+      document.getElementById("signupTab").classList.remove("active");
+      document.getElementById("loginForm").classList.add("hidden");
+      document.getElementById("signupForm").classList.add("hidden");
+
+      if (tab === 'login') {
+        document.getElementById("loginTab").classList.add("active");
+        document.getElementById("loginForm").classList.remove("hidden");
+      } else {
+        document.getElementById("signupTab").classList.add("active");
+        document.getElementById("signupForm").classList.remove("hidden");
+      }
+
+      updatePlaceholders();
+    }
+
+    function toggleMethod(selectedMethod) {
+      method = selectedMethod;
+      document.getElementById("emailToggle").classList.remove("active");
+      document.getElementById("phoneToggle").classList.remove("active");
+      document.getElementById(method + "Toggle").classList.add("active");
+      updatePlaceholders();
+    }
+
+    function updatePlaceholders() {
+      const loginField = document.getElementById("loginIdentifier");
+      const signupField = document.getElementById("signupIdentifier");
+
+      if (method === 'email') {
+        loginField.placeholder = "Enter your email";
+        signupField.placeholder = "Enter your email";
+      } else {
+        loginField.placeholder = "Enter your phone number";
+        signupField.placeholder = "Enter your phone number";
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.classList.add("hidden"), 300);
+      }, 3000);
+    }
+
+    function registerUser() {
+      const name = document.getElementById("signupName").value.trim();
+      const identifier = document.getElementById("signupIdentifier").value.trim();
+      const password = document.getElementById("signupPassword").value;
+      const confirm = document.getElementById("signupConfirm").value;
+
+      if (!name || !identifier || !password || !confirm) {
+        showToast("Please fill all fields.");
+        return;
+      }
+
+      if (password !== confirm) {
+        showToast("Passwords do not match!");
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("safeRouteUsers") || "[]");
+
+      if (users.some(user => user.identifier === identifier)) {
+        showToast("User already exists!");
+        return;
+      }
+
+      users.push({ name, identifier, password });
+      localStorage.setItem("safeRouteUsers", JSON.stringify(users));
+
+      showToast("Registration successful!");
+      switchTab('login');
+    }
+
+  function loginUser() {
+  const identifier = document.getElementById("loginIdentifier").value.trim();
+  const password = document.getElementById("loginPassword").value;
+
+  let users = JSON.parse(localStorage.getItem("safeRouteUsers") || "[]");
+  const user = users.find(user => user.identifier === identifier && user.password === password);
+
+  if (user) {
+    showToast("Welcome back, " + user.name + "!");
+    setTimeout(() => {
+      // ✅ Save logged in user for later use
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      // ✅ Redirect to home.html
+      window.location.href = "home.html";
+    }, 1000);
+  } else {
+    showToast("Invalid credentials.");
+  }
+}
+
+  </script>
+</body>
+</html>
