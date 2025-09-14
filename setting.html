@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9fafc;
+      color: #333;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    /* Toggle switch style */
+    .toggle-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .toggle {
+      position: relative;
+      width: 45px;
+      height: 24px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(21px);
+    }
+
+    /* Footer links */
+    .footer-links div {
+      padding: 12px 0;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .footer-links div:hover {
+      color: #007bff;
+    }
+
+    .signout {
+      color: red;
+      font-weight: bold;
+      text-align: center;
+      padding: 15px;
+      cursor: pointer;
+    }
+
+    /* Bottom nav bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: #555;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .bottom-nav a.active {
+      color: #007bff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- General Settings -->
+    <div class="card">
+      <div class="section-title">General</div>
+      <div class="toggle-container">
+        <span>Dark Mode</span>
+        <label class="toggle">
+          <input type="checkbox" id="darkMode">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-container">
+        <span>Push Notifications</span>
+        <label class="toggle">
+          <input type="checkbox" id="pushNotifications" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-container">
+        <span>Location Sharing</span>
+        <label class="toggle">
+          <input type="checkbox" id="locationSharing">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-container">
+        <span>Auto SOS</span>
+        <label class="toggle">
+          <input type="checkbox" id="autoSOS">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div class="card">
+      <div class="section-title">Account</div>
+      <div class="footer-links">
+        <div onclick="alert('Profile updated!')">Edit Profile</div>
+        <div onclick="alert('Password reset link sent!')">Change Password</div>
+      </div>
+    </div>
+
+    <!-- App Info -->
+    <div class="card">
+      <div class="section-title">App Information</div>
+      <div class="footer-links">
+        <div onclick="alert('Privacy Policy opened!')">Privacy Policy</div>
+        <div onclick="alert('Support page opened!')">Support</div>
+        <div onclick="alert('App version 1.0.0')">App Version</div>
+      </div>
+    </div>
+
+    <div class="signout" onclick="alert('Signed Out!')">Sign Out</div>
+  </div>
+  
+  <script>
+    // Dark Mode toggle functionality
+    const darkModeToggle = document.getElementById('darkMode');
+    darkModeToggle.addEventListener('change', () => {
+      document.body.style.background = darkModeToggle.checked ? '#222' : '#f9fafc';
+      document.body.style.color = darkModeToggle.checked ? '#f9fafc' : '#333';
+    });
+  </script>
+</body>
+</html>
