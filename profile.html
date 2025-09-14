@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Safe Route Lite - Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #f8fafc;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0 0 70px 0;
+      color: #222;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px;
+      background: #fff;
+      border-bottom: 1px solid #e0e7ef;
+    }
+
+    .header .back-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .header-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .shield-icon {
+      width: 32px;
+      height: 32px;
+      background: #d32f2f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shield-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
+    }
+
+    /* Profile Card */
+    .profile-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px #e0e7ef44;
+      padding: 20px;
+      margin: 16px 12px;
+    }
+
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #2196f3;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .profile-email {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .profile-edit {
+      background: none;
+      border: none;
+      color: #007bff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .profile-badge-row {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .profile-badge {
+      background: #e9fbe9;
+      color: #43b36a;
+      border-radius: 8px;
+      padding: 2px 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .profile-points {
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .profile-stats-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      border-top: 1px solid #eee;
+      padding-top: 12px;
+    }
+
+    .profile-stat {
+      flex: 1;
+      text-align: center;
+    }
+
+    .profile-stat .stat-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #007bff;
+    }
+
+    .profile-stat .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* Section Card */
+    .section {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px;
+      margin: 0 12px 16px 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .section h3 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .manage-link {
+      float: right;
+      color: #007bff;
+      font-size: 0.9rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Contacts */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    .contact-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #43b36a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* Routes */
+    .route-item {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      justify-content: space-between;
+    }
+
+    .route-name {
+      font-weight: 500;
+    }
+
+    .route-meta {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .route-score {
+      background: #e9fbe9;
+      color: #43b36a;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .route-score.low {
+      background: #fffbe6;
+      color: #f9a825;
+    }
+
+    /* Achievements */
+    .achievements {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .achievement {
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-size: 0.85rem;
+      background: #fff;
+    }
+
+    .achievement.active {
+      border-color: #ffd700;
+      background: #fffbe5;
+    }
+
+    .achievement .title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    /* Settings Switch */
+    .setting {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.95rem;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #007bff;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Links */
+    .link {
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .link.signout {
+      color: red;
+      border: none;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 500px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+
+    .bottom-nav div {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+    }
+
+    .bottom-nav .active {
+      color: #007bff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="header">
+    <button class="back-btn" onclick="history.back()">&larr;</button>
+    <span class="header-title">Profile</span>
+    <div class="shield-icon">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M12 2C8.13 2 5 4.13 5 7v5c0 5.25 4.5 9.74 6.14 11.29a1.99 1.99 0 0 0 2.72 0C14.5 21.74 19 17.25 19 12V7c0-2.87-3.13-5-7-5z" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div class="profile-card">
+    <div class="profile-row">
+      <div class="profile-avatar">&#128100;</div>
+      <div class="profile-info">
+        <div class="profile-name">
+          <span id="profileName">Krutika Patil</span>
+          <button class="profile-edit" onclick="editProfile()">&#9998;</button>
+        </div>
+        <div class="profile-email" id="profileEmail">krutikapatil1204@gmail.com</div>
+        <div class="profile-badge-row">
+          <span class="profile-badge">Safety Helper</span>
+          <span class="profile-points">127 points</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-stats-row">
+      <div class="profile-stat">
+        <div class="stat-value">8</div>
+        <div class="stat-label">Reports</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-value">23</div>
+        <div class="stat-label">Safe Routes</div>
+      </div>
+      <div class="profile-stat">
+        <div class="stat-value">3rd</div>
+        <div class="stat-label">Rank</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emergency Contacts -->
+  <div class="section">
+    <h3>Emergency Contacts
+      <button class="manage-link" onclick="alert('Manage contacts coming soon!')">Manage</button>
+    </h3>
+    <div class="contact-item">
+      <span class="contact-avatar">&#128100;</span>
+      <div>
+        <div>Sahil Chaudhari</div>
+        <div style="color:#666;font-size:0.9rem;">+91 9579703377</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <span class="contact-avatar">&#128100;</span>
+      <div>
+        <div>Rohit Koli</div>
+        <div style="color:#666;font-size:0.9rem;">+91 7020572471</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Routes -->
+  <div class="section">
+    <h3>Saved Routes</h3>
+    <div class="route-item">
+      <div>
+        <div class="route-name">Home to Office</div>
+        <div class="route-meta">Daily • 2.3 km</div>
+      </div>
+      <div class="route-score">8/10</div>
+    </div>
+    <div class="route-item">
+      <div>
+        <div class="route-name">Home to Gym</div>
+        <div class="route-meta">Weekly • 1.8 km</div>
+      </div>
+      <div class="route-score">9/10</div>
+    </div>
+    <div class="route-item">
+      <div>
+        <div class="route-name">Office to Mall</div>
+        <div class="route-meta">Occasional • 3.1 km</div>
+      </div>
+      <div class="route-score low">7/10</div>
+    </div>
+  </div>
+
+  <!-- Achievements -->
+  <div class="section">
+    <h3>Achievements</h3>
+    <div class="achievements">
+      <div class="achievement active">
+        <div class="title">Safety Helper</div>
+        <div>5+ reports submitted</div>
+      </div>
+      <div class="achievement active">
+        <div class="title">Community Guardian</div>
+        <div>100+ safety points</div>
+      </div>
+      <div class="achievement">
+        <div class="title">Route Master</div>
+        <div>10+ safe routes used</div>
+      </div>
+      <div class="achievement">
+        <div class="title">Safety Champion</div>
+        <div>500+ safety points</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy & Safety -->
+  <div class="section">
+    <h3>Privacy & Safety Settings</h3>
+    <div class="setting">
+      <span>Push Notifications</span>
+      <label class="switch">
+        <input type="checkbox" id="pushNotifications">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting">
+      <span>Location Sharing</span>
+      <label class="switch">
+        <input type="checkbox" id="locationSharing">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting">
+      <span>Auto SOS</span>
+      <label class="switch">
+        <input type="checkbox" id="autoSOS">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- App Links -->
+  <div class="section">
+    <div class="link"  onclick="window.location.href='setting.html'">App Settings ➡</div>
+    <div class="link" onclick="alert('Privacy Policy coming soon!')">Privacy Policy ➡</div>
+    
+
+    <div class="link" onclick="alert('Support page coming soon!')">Support ➡</div>
+    <div class="link signout" onclick="signOut()">Sign Out</div>
+  </div>
+
+  <!-- Bottom Nav -->
+ <div class="bottom-nav">
+      <div  onclick="window.location.href='home.html'">🏠<br>Home</div>
+     <div  onclick="window.location.href='commnity.html'">👥<br>Community</div>
+     <div  onclick="window.location.href='profile.html'">👤<br>Profile</div>
+   
+</div>
+
+
+  <script>
+    // Load settings from localStorage
+    window.onload = () => {
+      document.getElementById("pushNotifications").checked = JSON.parse(localStorage.getItem("pushNotifications") || "false");
+      document.getElementById("locationSharing").checked = JSON.parse(localStorage.getItem("locationSharing") || "false");
+      document.getElementById("autoSOS").checked = JSON.parse(localStorage.getItem("autoSOS") || "false");
+    };
+
+    // Save toggles
+    document.getElementById("pushNotifications").addEventListener("change", e => localStorage.setItem("pushNotifications", e.target.checked));
+    document.getElementById("locationSharing").addEventListener("change", e => localStorage.setItem("locationSharing", e.target.checked));
+    document.getElementById("autoSOS").addEventListener("change", e => localStorage.setItem("autoSOS", e.target.checked));
+
+    // Edit profile name
+    function editProfile() {
+      const nameSpan = document.getElementById("profileName");
+      const currentName = nameSpan.textContent;
+      const input = document.createElement("input");
+      input.value = currentName;
+      input.style.fontSize = "1rem";
+      input.onblur = () => {
+        if (input.value.trim()) nameSpan.textContent = input.value.trim();
+        input.replaceWith(nameSpan);
+      };
+      nameSpan.replaceWith(input);
+      input.focus();
+    }
+
+    // Sign Out
+    function signOut() {
+      if (confirm("Are you sure you want to sign out?")) {
+        localStorage.clear();
+        alert("Signed out!");
+        window.location.href='login.html'
+    
+      }
+    }
+  </script>
+</body>
+
+</html>
