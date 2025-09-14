@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency SOS</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      color: #222;
+    }
+
+    header {
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      border-bottom: 1px solid #eee;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    p {
+      text-align: center;
+      max-width: 280px;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .sos-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .sos-btn {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: red;
+      color: #fff;
+      border: none;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+      z-index: 2;
+      transition: transform 0.2s;
+    }
+
+    .sos-btn span {
+      font-size: 12px;
+      font-weight: normal;
+      opacity: 0.8;
+    }
+
+    .sos-btn:active {
+      transform: scale(0.95);
+    }
+
+    .rays {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .ray {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 30px;
+      background: rgba(255, 0, 0, 0.6);
+      transform-origin: center -25px;
+      opacity: 0;
+      border-radius: 3px;
+    }
+
+    .ray.animate {
+      animation: burst 1s forwards;
+    }
+
+    @keyframes burst {
+      0%   { transform: scale(0.2) translate(-50%, -50%); opacity: 1; }
+      80%  { transform: scale(1.5) translate(-50%, -50%); opacity: 1; }
+      100% { transform: scale(2.2) translate(-50%, -50%); opacity: 0; }
+    }
+
+    .timer {
+      font-size: 13px;
+      color: gray;
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      background: #f7f7f7;
+      padding: 15px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .info-box h2 {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .info-box ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .info-box li {
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+      background: #fafafa;
+    }
+
+    nav button {
+      flex: 1;
+      padding: 8px 0;
+      border: none;
+      background: none;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+    }
+
+    nav button.active {
+      color: red;
+      font-weight: bold;
+    }
+
+    /* Toast (app-style alert) */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(to right, #3b82f6, #6366f1);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease, bottom 0.3s ease;
+      z-index: 9999;
+    }
+    .toast.show {
+      opacity: 1;
+      bottom: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>Emergency SOS</header>
+
+  <main>
+    <p>Tap the SOS button below to send an emergency alert to your contacts and local authorities.</p>
+
+    <div class="sos-container">
+      <div class="rays" id="rays"></div>
+      <button class="sos-btn" id="sosBtn">
+        SOS <br>
+        <span>Tap to activate</span>
+      </button>
+    </div>
+
+    <p class="timer" id="countdown">⏱ Activates in 3 seconds</p>
+
+    <div class="info-box">
+      <h2>What happens when you activate SOS:</h2>
+      <ul>
+        <li>Your location is shared with emergency contacts</li>
+        <li>Local authorities are automatically notified</li>
+        <li>Emergency SMS is sent to your contacts</li>
+        <li>Optional siren can alert people nearby</li>
+      </ul>
+    </div>
+  </main>
+
+
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const sosBtn = document.getElementById("sosBtn");
+    const raysContainer = document.getElementById("rays");
+    const countdown = document.getElementById("countdown");
+    const toast = document.getElementById("toast");
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    sosBtn.addEventListener("click", () => {
+      raysContainer.innerHTML = "";
+
+      for (let i = 0; i < 12; i++) {
+        const ray = document.createElement("div");
+        ray.classList.add("ray");
+        ray.style.transform = `rotate(${i * 30}deg) translate(-50%, -50%)`;
+        raysContainer.appendChild(ray);
+
+        setTimeout(() => {
+          ray.classList.add("animate");
+        }, i * 80);
+      }
+
+      // show alert
+      showToast("🚨 SOS Alert Triggered! Sending help...");
+
+      // countdown + redirect
+      let timeLeft = 3;
+      countdown.textContent = `⏱ Activates in ${timeLeft} seconds`;
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+          countdown.textContent = `⏱ Activates in ${timeLeft} seconds`;
+        } else {
+          clearInterval(timer);
+          window.location.href = "sos_activated.html";
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
