@@ -1,0 +1,305 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Unsafe Area</title>
+    <style>
+         :root {
+            --primary: #60bdf7;
+            --text-dark: #1e3a5f;
+            --border-color: #cce7f6;
+            --input-bg: #f9fbff;
+            --shadow-color: rgba(96, 189, 247, 0.2);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-dark);
+        }
+        
+        .app-container {
+            height: 100%;
+            width: 100%;
+            padding: 20px;
+            padding-top: 30px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .header {
+            font-size: 1.7em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        label {
+            font-weight: 600;
+            font-size: 0.95em;
+            margin: 12px 0 6px;
+            display: block;
+        }
+        
+        select,
+        input[type="file"],
+        .location-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background-color: var(--input-bg);
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+        
+        .location-input {
+            border: 1px solid var(--border-color);
+        }
+        
+        .textarea-wrapper {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 5px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 10px;
+        }
+        
+        .textarea-wrapper textarea {
+            width: 100%;
+            height: 125px;
+            /* approx 4‑5 lines */
+            border: none;
+            background: transparent;
+            resize: none;
+            outline: none;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95em;
+            color: var(--text-dark);
+            line-height: 1.5em;
+            padding: 10px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        
+        .photo-upload {
+            border: 2px dashed var(--primary);
+            padding: 25px 15px;
+            text-align: center;
+            border-radius: 12px;
+            color: #6b7280;
+            background: #f0faff;
+            margin-bottom: 25px;
+        }
+        
+        .photo-upload:hover {
+            background: #e6f4fb;
+        }
+        
+        .photo-upload input[type="file"] {
+            margin-top: 10px;
+            padding: 8px;
+            border: none;
+            background: #fff;
+            cursor: pointer;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1em;
+            font-weight: bold;
+            background: linear-gradient(to right, #38bdf8, #60a5fa);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(to right, #0ea5e9, #3b82f6);
+        }
+        
+        .alert-box {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+            font-size: 0.95em;
+            z-index: 1000;
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 0.8em;
+            color: #6b7280;
+            margin-top: 20px;
+            line-height: 1.4em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <div class="header">Report Unsafe Area</div>
+
+        <!-- Location display -->
+        <label for="location">Location</label>
+        <input type="text" id="location" class="location-input" readonly placeholder="Fetching address..." />
+
+        <!-- Category -->
+        <label for="category">Category</label>
+        <select id="category">
+    <option value="">Select issue category</option>
+    <option>🌑 Dark Street</option>
+    <option>💡 Poor Lighting</option>
+    <option>🕵 Suspicious Activity</option>
+    <option>🚨 Harassment</option>
+    <option>🌲 Isolated Area</option>
+  </select>
+
+        <!-- Description -->
+        <label for="description">Description</label>
+        <div class="textarea-wrapper">
+            <textarea id="description" placeholder="Write what makes this area unsafe in 4‑5 lines..." maxlength="500"></textarea>
+        </div>
+
+        <<!-- Photo upload / camera -->
+<label for="photo">Photo</label>
+<div class="photo-upload">
+    <div class="photo-placeholder">
+        <img src="48e5c40c-44a1-4d02-b07a-f1d22035a7f4.png" alt="Add photo" class="photo-icon">
+        <p>Add photos to help others</p>
+        <small>JPG, PNG up to 5MB each</small>
+    </div>
+    <input type="file" id="photo" accept="image/*" capture="environment" />
+</div>
+
+        <button class="submit-btn" onclick="submitReport()">Submit Report</button>
+
+        <div class="footer">
+            🔐 Privacy & Safety: Your report is anonymous and helps improve community safety. Location data and photos are used only for safety mapping purposes and not shared publicly without removing identifying metadata. If you feel unsafe, do not provide identifiable
+            info.
+        </div>
+    </div>
+
+    <div class="alert-box" id="alertBox"></div>
+
+    <script>
+        const GOOGLE_API_KEY = 'AIzaSyB2kVdtra-weUtpAL7dW5RG-vXnGAvjZE'; // your key
+
+        function showAlert(msg) {
+            const ab = document.getElementById('alertBox');
+            ab.textContent = msg;
+            ab.style.display = 'block';
+            setTimeout(() => {
+                ab.style.display = 'none';
+            }, 3000);
+        }
+
+        function initAddress() {
+            const locInput = document.getElementById('location');
+
+            if (!navigator.geolocation) {
+                locInput.value = 'Geolocation not supported';
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    // Use Google Geocoder to get address
+                    const geocoder = new google.maps.Geocoder();
+                    const latlng = {
+                        lat: lat,
+                        lng: lng
+                    };
+                    geocoder.geocode({
+                        location: latlng
+                    }, (results, status) => {
+                        if (status === 'OK') {
+                            if (results[0]) {
+                                locInput.value = results[0].formatted_address;
+                            } else {
+                                locInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                            }
+                        } else {
+                            locInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                        }
+                    });
+                },
+                error => {
+                    locInput.value = 'Unable to access location.';
+                }
+            );
+        }
+
+        function submitReport() {
+            const category = document.getElementById('category').value;
+            const description = document.getElementById('description').value.trim();
+            const photoFile = document.getElementById('photo').files[0];
+
+            if (!category) {
+                showAlert('⚠ Please select a category.');
+                return;
+            }
+            if (!description) {
+                showAlert('⚠ Please enter description.');
+                return;
+            }
+            if (photoFile && photoFile.size > 5 * 1024 * 1024) {
+                showAlert('⚠ Photo size must be under 5MB.');
+                return;
+            }
+
+            showAlert('✅ Report submitted successfully.');
+            // Here you can send data to server or store locally if needed
+
+            // Reset fields
+            document.getElementById('category').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('photo').value = '';
+        }
+
+        // Load Google Maps JS API
+        function loadGoogleMapsScript(callback) {
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
+            script.defer = true;
+            script.onload = callback;
+            document.head.appendChild(script);
+        }
+
+        window.onload = () => {
+            loadGoogleMapsScript(() => {
+                initAddress();
+            });
+        };
+    </script>
+
+</body>
+
+</html>
