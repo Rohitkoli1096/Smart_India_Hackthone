@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Alert Sent</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #d32f2f;
+      color: white;
+      text-align: center;
+    }
+    h2 { margin: 15px 0 5px; font-size: 24px; font-weight: bold; }
+    p.subtitle { margin: 0 0 20px; font-size: 14px; opacity: 0.9; }
+    .card {
+      background: #fff; color: #333; margin: 15px auto; padding: 18px;
+      border-radius: 12px; max-width: 360px; text-align: left;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .icon { text-align: center; margin-bottom: 12px; }
+    .icon-circle {
+      width: 70px; height: 70px; border-radius: 50%; background: #a5d6a7;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+    }
+    .icon-circle img { width: 36px; height: 36px; }
+    h3 { text-align: center; margin: 8px 0; font-size: 18px; }
+    .small-text { text-align: center; font-size: 13px; color: #666; }
+    h4 { margin: 0 0 10px; font-size: 16px; color: #222; }
+    .status { font-weight: bold; color: #2e7d32; float: right; }
+    button.toggle-btn {
+      background: #eee; color: #333; padding: 10px 20px; border-radius: 20px;
+      font-size: 14px; cursor: pointer; border: none; float: right;
+      transition: 0.3s;
+    }
+    button.toggle-btn.on { background: #4caf50; color: white; }
+    button.safe-btn {
+      background: #fff; color: #d32f2f; font-weight: bold;
+      border: none; border-radius: 25px; padding: 12px 18px; font-size: 15px;
+      width: 80%; max-width: 320px; margin: 20px auto; display: block;
+      cursor: pointer; transition: 0.3s;
+    }
+    button.safe-btn:hover { background: #f1f1f1; }
+    .home-link {
+      display: block; margin-bottom: 20px; font-size: 14px;
+      color: #fff; text-decoration: underline; cursor: pointer;
+    }
+
+    /* 🔴 App-style alert banner */
+    .alert-banner {
+      display: none;
+      background: #b71c1c;
+      color: #fff;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      animation: blink 1s infinite;
+      border-radius: 8px;
+      margin: 10px auto;
+      max-width: 360px;
+    }
+    @keyframes blink {
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <h2>Emergency Alert Sent</h2>
+  <p class="subtitle">Help is on the way!</p>
+
+  <!-- Alert Card -->
+  <div class="card">
+    <div class="icon">
+      <div class="icon-circle">
+        <img src="img2.png" alt="shield"/>
+      </div>
+    </div>
+    <h3>Alert Successfully Sent</h3>
+    <p class="small-text">Your emergency contacts and authorities have been notified</p>
+  </div>
+
+  <!-- Location -->
+  <div class="card">
+    <h4>Current Location</h4>
+    <p id="location">Fetching location...</p>
+  </div>
+
+  <!-- Notifications -->
+  <div class="card">
+    <h4>Notifications Sent To:</h4>
+    <p>📞 Emergency Services <span class="status">✔ Notified</span></p>
+    <p>💬 Rohit Koli (7020572471) <span class="status">✔ SMS Sent</span></p>
+ 
+  </div>
+
+  <div class="card">
+    <h4>Emergency Siren 
+      <button id="sirenToggle" class="toggle-btn">OFF</button>
+    </h4>
+    <audio id="sirenSound" loop>
+      <source src="https://www.free-sounds.net/sound-files/siren-sounds/SIREN01.WAV" type="audio/wav">
+    </audio>
+  </div>
+
+  <!-- App-style alert banner -->
+  <div id="alertBanner" class="alert-banner">🚨 Emergency Siren Activated!</div>
+
+  <!-- Buttons -->
+  <button class="safe-btn" onclick="cancelAlert()">I'm Safe - Cancel Alert</button>
+  <span class="home-link" onclick="goHome()">Return to Home</span>
+
+  <script>
+    const GOOGLE_API_KEY = "AIzaSyB2kVdtra-weUtpAL7dWZ5RG-vXnGAvjZE"; // your API key
+
+    // 📍 Get Location + Google Geocoding API
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+
+          try {
+            const res = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${GOOGLE_API_KEY}`
+            );
+            const data = await res.json();
+
+            if (data.status === "OK" && data.results.length > 0) {
+              const address = data.results[0].formatted_address;
+              document.getElementById("location").innerHTML =
+                `${address} <br><a href="https://www.google.com/maps?q=${lat},${lon}" target="_blank">(View on Map)</a>`;
+            } else {
+              document.getElementById("location").textContent =
+                `${lat}, ${lon} (Location found, address unavailable)`;
+            }
+          } catch (e) {
+            document.getElementById("location").textContent =
+              `${lat}, ${lon} (Error fetching address)`;
+          }
+        },
+        () => {
+          document.getElementById("location").textContent = "Location unavailable";
+        }
+      );
+    } else {
+      document.getElementById("location").textContent = "Geolocation not supported";
+    }
+
+    // 🔊 Siren Button with App-style Alert
+    const sirenToggle = document.getElementById("sirenToggle");
+    const sirenSound = document.getElementById("sirenSound");
+    const alertBanner = document.getElementById("alertBanner");
+
+    sirenToggle.addEventListener("click", () => {
+      if (sirenToggle.classList.contains("on")) {
+        // 🔇 Turn OFF
+        sirenSound.pause();
+        sirenSound.currentTime = 0;
+        sirenToggle.classList.remove("on");
+        sirenToggle.textContent = "OFF";
+        alertBanner.style.display = "none";
+      } else {
+        // 🔊 Turn ON
+        sirenSound.play();
+        sirenToggle.classList.add("on");
+        sirenToggle.textContent = "ON";
+        alertBanner.style.display = "block";
+      }
+    });
+
+    // 🛑 Cancel Alert
+    function cancelAlert() {
+      alert("Emergency Alert Cancelled. Contacts notified.");
+      window.location.href = "Emergency_sos.html"; 
+    }
+
+    // 🏠 Return Home
+    function goHome() {
+      window.location.href = "home.html"; // Replace with your homepage
+    }
+  </script>
+</body>
+</html>
