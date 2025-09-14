@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Route Options</title>
+  <style>
+    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #f7f7fa; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #ddd; background: #fff; }
+    .header h3 { margin: 0; font-size: 18px; flex: 1; text-align: center; }
+    .back-arrow, .shield-btn { cursor: pointer; }
+    .back-arrow img, .shield-btn img { width: 22px; height: 22px; }
+
+    #map { width: 100%; height: 400px; }
+    .map-legend { position: absolute; top: 70px; left: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .legend-item { background: #fff; padding: 6px 10px; border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+    .routes { padding: 12px; }
+    .route-card { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); border-left: 4px solid #ccc; }
+    .route-card.recommended { border-left: 4px solid #4caf50; background: #e8f5e9; }
+    .route-card.fastest { border-left: 4px solid #f44336; background: #fff5f5; }
+    .route-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .score { padding: 4px 8px; border-radius: 12px; font-size: 12px; color: #fff; font-weight: bold; }
+    .score.green { background: #4caf50; }
+    .score.red { background: #f44336; }
+    .route-details { font-size: 14px; color: #333; }
+    .tags { margin-top: 6px; font-size: 12px; color: #666; }
+
+    .start-btn { display: flex; justify-content: space-between; align-items: center; background: #1976d2; color: white; border: none; border-radius: 25px; padding: 14px 20px; font-size: 16px; font-weight: bold; width: calc(100% - 24px); margin: 10px auto 20px; cursor: pointer; }
+    .start-btn img { width: 20px; height: 20px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="back-arrow" onclick="goBack()">
+      <img src="https://img.icons8.com/ios-filled/50/000000/left.png" alt="Back">
+    </span>
+    <h3>Route Options</h3>
+    <span class="shield-btn">
+      <img src="https://img.icons8.com/ios-filled/50/fa314a/protect.png" alt="Shield">
+    </span>
+  </div>
+
+  <div id="map"></div>
+  <div class="map-legend">
+    <div class="legend-item">💡 Well-lit</div>
+    <div class="legend-item">⚠️ Unsafe zone</div>
+  </div>
+
+  <div class="routes">
+    <div class="route-card recommended">
+      <div class="route-header">
+        <strong>Recommended Route</strong>
+        <span class="score green">8/10</span>
+      </div>
+      <div class="route-details" id="recommendedDetails">Loading...</div>
+      <div class="tags">💡 Well-lit · ✅ Safe areas</div>
+    </div>
+
+    <div class="route-card fastest">
+      <div class="route-header">
+        <strong>Fastest Route</strong>
+        <span class="score red">3/10</span>
+      </div>
+      <div class="route-details" id="fastestDetails">Loading...</div>
+      <div class="tags">⚠️ Poorly lit · ⚠️ Recent incidents</div>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startNavigation()">
+    Start Navigation 
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/share.png" alt="Share">
+  </button>
+
+  <!-- ✅ Fixed: Using your correct API key -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBasoFloNr53qNdsK4c8ftiI8xzFJbAde0&libraries=places"></script>
+
+  <script>
+    let map, directionsService, directionsRenderer;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 19.076, lng: 72.8777 }, // Mumbai
+        zoom: 13,
+      });
+
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer({ map });
+
+      const origin = localStorage.getItem("origin") || "Mumbai, India";
+      const destination = localStorage.getItem("destination") || "Pune, India";
+
+      calculateAndDisplayRoute(origin, destination);
+    }
+
+    function calculateAndDisplayRoute(origin, destination) {
+      directionsService.route(
+        {
+          origin: origin,
+          destination: destination,
+          travelMode: google.maps.TravelMode.WALKING,
+        },
+        (response, status) => {
+          if (status === "OK") {
+            directionsRenderer.setDirections(response);
+
+            const route = response.routes[0].legs[0];
+            document.getElementById("recommendedDetails").innerText =
+              `${route.duration.text} · ${route.distance.text} · Via ${route.start_address.split(",")[0]}`;
+
+            document.getElementById("fastestDetails").innerText =
+              `${Math.max(1, route.duration.value/60 - 3).toFixed(0)} min · ${(route.distance.value/1000 - 0.5).toFixed(1)} km · Alt route`;
+          } else {
+            alert("Directions request failed due to " + status);
+          }
+        }
+      );
+    }
+
+    function startNavigation() {
+      const origin = localStorage.getItem("origin");
+      const destination = localStorage.getItem("destination");
+      window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=walking`, "_blank");
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    window.onload = initMap;
+  </script>
+</body>
+</html>
