@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Community Safety</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            background: #f8fafc;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0p 18px 10px 18px;
+            background: #fff;
+            border-bottom: 1px solid #e0e7ef;
+        }
+        
+        .header .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #222;
+        }
+        
+        .shield-icon {
+            width: 32px;
+            height: 32px;
+            background: #d32f2f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .shield-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: #fff;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            margin: 18px 0 10px 0;
+            justify-content: center;
+        }
+        
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #e0e7ef44;
+            padding: 18px 20px 10px 20px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+        
+        .stat-card .stat-label {
+            font-size: 0.98rem;
+            color: #888;
+            margin-top: 4px;
+        }
+        
+        .stat-card:nth-child(2) .stat-value {
+            color: #43b36a;
+        }
+        
+        .stat-card:nth-child(3) .stat-value {
+            color: #f9a825;
+        }
+        
+        .tabs {
+            display: flex;
+            margin: 18px 0 0 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #e0e7ef;
+            width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #222;
+            background: none;
+            border: none;
+            outline: none;
+            transition: background 0.2s;
+        }
+        
+        .tab-btn.active {
+            background: #007bff;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .main-content {
+            padding: 0 12px 24px 12px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .reports-map-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #e0e7ef44;
+            padding: 18px 16px 16px 16px;
+            margin: 18px 0 12px 0;
+        }
+        
+        .reports-map-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .reports-map-title {
+            font-weight: 600;
+            font-size: 1.08rem;
+        }
+        
+        .filter-btn {
+            background: #f1f1f1;
+            border: 1px solid #e0e7ef;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #222;
+            transition: background 0.2s;
+        }
+        
+        .filter-btn:hover {
+            background: #e0e7ef;
+        }
+        
+        .reports-map {
+            background: #f8fafc;
+            border: 1.5px dashed #cfd8dc;
+            border-radius: 10px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 1.08rem;
+        }
+        
+        .recent-reports-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 18px 0 8px 0;
+        }
+        
+        .recent-reports-title {
+            font-weight: 600;
+            font-size: 1.08rem;
+        }
+        
+        .report-btn {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 7px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .report-btn:hover {
+            background: #0056b3;
+        }
+        
+        .report-list {
+            margin-top: 0;
+        }
+        
+        .report-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #e0e7ef44;
+            padding: 14px 16px 10px 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .report-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .report-title {
+            font-weight: 600;
+            font-size: 1.08rem;
+        }
+        
+        .report-severity {
+            padding: 2px 10px;
+            border-radius: 8px;
+            font-size: 0.93rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .severity-medium {
+            background: #fffbe6;
+            color: #f9a825;
+            border: 1px solid #f9a825;
+        }
+        
+        .severity-high {
+            background: #ffebee;
+            color: #d32f2f;
+            border: 1px solid #d32f2f;
+        }
+        
+        .severity-low {
+            background: #e8f5e9;
+            color: #43b36a;
+            border: 1px solid #43b36a;
+        }
+        
+        .report-alert {
+            color: #d32f2f;
+            font-size: 1.3rem;
+            margin-left: 8px;
+        }
+        
+        .report-desc {
+            color: #444;
+            font-size: 0.98rem;
+            margin: 6px 0 0 0;
+        }
+        
+        .report-meta {
+            color: #888;
+            font-size: 0.93rem;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        .leaderboard-content {
+            display: none;
+            margin-top: 18px;
+        }
+        
+        .leaderboard-content.active {
+            display: block;
+        }
+        /* Simple modal for demo */
+        
+        .modal-bg {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.2);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px 18px;
+            min-width: 280px;
+            max-width: 90vw;
+            box-shadow: 0 2px 12px #2222;
+            text-align: center;
+        }
+        
+        .modal-close {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            margin-top: 18px;
+            cursor: pointer;
+        }
+        /* Timer styles */
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .timer-page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+        
+        .timer-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e6f0ff 60%, #b3d1ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto 20px auto;
+            box-shadow: 0 4px 24px 0 #007bff22;
+            position: relative;
+        }
+        
+        .timer-circle svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .timer-value {
+            font-size: 2.8rem;
+            color: #007bff;
+            font-weight: bold;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .sos-msg {
+            color: #dc3545;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        
+        .back-btn {
+            background: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 16px;
+            margin-top: 25px;
+            cursor: pointer;
+        }
+        
+        .back-btn:hover {
+            background: #bbb;
+        }
+        
+        .location-card {
+            background: #f8fafc;
+            border: 1px solid #e0e7ef;
+            border-radius: 14px;
+            padding: 18px 16px 12px 16px;
+            margin: 24px 0 16px 0;
+            box-shadow: 0 2px 8px #e0e7ef44;
+            text-align: left;
+        }
+        
+        .location-header {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.08rem;
+            margin-bottom: 6px;
+        }
+        
+        .location-icon {
+            color: #007bff;
+            font-size: 1.2rem;
+            margin-right: 7px;
+        }
+        
+        .location-title {
+            color: #2e7d32;
+        }
+        
+        .location-desc {
+            color: #444;
+            font-size: 0.98rem;
+            margin-left: 1.7em;
+        }
+        
+        .checkin-btn {
+            width: 100%;
+            background: #43b36a;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 13px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 18px 0 10px 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .checkin-btn:hover {
+            background: #2e7d32;
+        }
+        
+        .timer-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .action-btn {
+            background: #fff;
+            border: 1.5px solid #e0e7ef;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: background 0.2s, border 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: #f1f1f1;
+            border-color: #007bff;
+        }
+        /* Bottom Navigation Bar */
+           .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 500px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+
+    .bottom-nav div {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+    }
+
+    .bottom-nav .active {
+      color: #007bff;
+      font-weight: bold;
+    }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            outline: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            padding: 6px 0 2px 0;
+            cursor: pointer;
+        }
+        
+        .nav-btn .nav-icon {
+            margin-bottom: 2px;
+        }
+        
+        .nav-btn.active .nav-label {
+            color: #007bff !important;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Community Safety Main Page -->
+    <div id="communityPage">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">&larr;</button>
+            <span class="header-title">Community Safety</span>
+            <div class="shield-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 4.13 5 7v5c0 5.25 4.5 9.74 6.14 11.29a1.99 1.99 0 0 0 2.72 0C14.5 21.74 19 17.25 19 12V7c0-2.87-3.13-5-7-5zm0 2c3.31 0 6 1.79 6 3v5c0 4.25-3.5 8.06-6 10.29C9.5 18.06 6 14.25 6 10V7c0-1.21 2.69-3 6-3zm0 3a2 2 0 0 0-2 2v2a2 2 0 0 0 4 0V9a2 2 0 0 0-2-2z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" id="pointsValue">127</div>
+                <div class="stat-label">Your Points</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="reportsMadeValue">8</div>
+                <div class="stat-label">Reports Made</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="rankValue">3rd</div>
+                <div class="stat-label">Your Rank</div>
+            </div>
+        </div>
+        <div class="tabs">
+            <button class="tab-btn active" id="reportsTab" onclick="showTab('reports')">Reports</button>
+            <button class="tab-btn" id="leaderboardTab" onclick="showTab('leaderboard')">Leaderboard</button>
+        </div>
+        <div class="main-content">
+            <!-- Reports Tab Content -->
+            <div id="reportsContent">
+                <div class="reports-map-card">
+                    <div class="reports-map-header">
+                        <span class="reports-map-title">Recent Reports Map</span>
+                        <button class="filter-btn" onclick="openModal('Filter functionality coming soon!')">Filter</button>
+                    </div>
+                    <div class="reports-map" onclick="openModal('Interactive safety reports map coming soon!')">
+                        <span>Interactive safety reports map</span>
+                    </div>
+                </div>
+                <div class="recent-reports-header">
+                    <span class="recent-reports-title">Recent Reports</span>
+                  <button class="report-btn" onclick="window.location.href='report.html'">+ Report</button>
+
+                </div>
+                <div class="report-list">
+                    <div class="report-card" onclick="openModal('Details for Main St & 5th Ave')">
+                        <div class="report-title-row">
+                            <span class="report-title">Main St &amp; 5th Ave</span>
+                            <span class="report-severity severity-medium">medium</span>
+                            <span class="report-alert">&#9888;</span>
+                        </div>
+                        <div class="report-desc">Poor Lighting</div>
+                        <div class="report-meta">
+                            <span>&#128337; 2 hours ago</span>
+                            <span>&#128101; 3 reports</span>
+                        </div>
+                    </div>
+                    <div class="report-card" onclick="openModal('Details for Park Avenue Bridge')">
+                        <div class="report-title-row">
+                            <span class="report-title">Park Avenue Bridge</span>
+                            <span class="report-severity severity-high">high</span>
+                            <span class="report-alert">&#9888;</span>
+                        </div>
+                        <div class="report-desc">Suspicious Activity</div>
+                        <div class="report-meta">
+                            <span>&#128337; 4 hours ago</span>
+                            <span>&#128101; 7 reports</span>
+                        </div>
+                    </div>
+                    <div class="report-card" onclick="openModal('Details for Downtown Plaza')">
+                        <div class="report-title-row">
+                            <span class="report-title">Downtown Plaza</span>
+                            <span class="report-severity severity-high">high</span>
+                            <span class="report-alert">&#9888;</span>
+                        </div>
+                        <div class="report-desc">Harassment</div>
+                        <div class="report-meta">
+                            <span>&#128337; 6 hours ago</span>
+                            <span>&#128101; 5 reports</span>
+                        </div>
+                    </div>
+                    <div class="report-card" onclick="openModal('Details for Oak Street Park')">
+                        <div class="report-title-row">
+                            <span class="report-title">Oak Street Park</span>
+                            <span class="report-severity severity-low">low</span>
+                            <span class="report-alert">&#9888;</span>
+                        </div>
+                        <div class="report-desc">Dark Street</div>
+                        <div class="report-meta">
+                            <span>&#128337; 1 day ago</span>
+                            <span>&#128101; 2 reports</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Leaderboard Tab Content -->
+            <div id="leaderboardContent" class="leaderboard-content">
+                <h3>Leaderboard</h3>
+                <ol style="padding-left: 20px;">
+                    <li><strong>Alice Johnson</strong> – 15 reports</li>
+                    <li><strong>Rahul Sharma</strong> – 12 reports</li>
+                    <li><strong>You</strong> – 8 reports</li>
+                    <li><strong>Priya Singh</strong> – 7 reports</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <!-- Timer Page (hidden by default) -->
+    <div class="container timer-page" id="timerPage">
+        <h2>Journey Timer</h2>
+        <div class="timer-circle" style="position:relative;">
+            <svg id="progressCircle" width="180" height="180" style="position:absolute;top:0;left:0;">
+                <circle
+                    cx="90"
+                    cy="90"
+                    r="80"
+                    stroke="#e5e7eb"
+                    stroke-width="12"
+                    fill="none"
+                />
+                <circle
+                    id="progressArc"
+                    cx="90"
+                    cy="90"
+                    r="80"
+                    stroke="#43b36a"
+                    stroke-width="12"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-dasharray="502.654825"
+                    stroke-dashoffset="0"
+                    transform="rotate(-90 90 90)"
+                />
+            </svg>
+            <span class="timer-value" id="timerDisplay" style="position:relative;z-index:1;">00:00</span>
+        </div>
+        <div class="sos-msg" id="sosMsg" style="display:none;">Time's up! SOS sent to emergency contacts.</div>
+        <div class="location-card">
+            <div class="location-header">
+                <span class="location-icon">&#128205;</span>
+                <span class="location-title">Location Tracking Active</span>
+            </div>
+            <div class="location-desc">
+                Your location is being shared with emergency contacts
+            </div>
+        </div>
+        <button class="checkin-btn" id="checkinBtn">✓ I'm Safe - Check In</button>
+        <div class="timer-actions">
+            <button class="action-btn">&#9654;</button>
+            <button class="action-btn">&#8634;</button>
+        </div>
+        <button class="back-btn" onclick="goBack()">Back</button>
+    </div>
+    <!-- Modal for managing contacts -->
+    <div class="modal" id="contactsModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModalBtn">&times;</span>
+            <h3>Emergency Contacts</h3>
+            <div class="contact-list" id="contactList"></div>
+            <form class="add-contact" id="addContactForm">
+                <input type="text" id="contactName" placeholder="Contact Name" required />
+                <input type="text" id="contactPhone" placeholder="Phone Number" required />
+                <button type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+    <!-- Modal for demo functionality -->
+    <div class="modal-bg" id="modalBg">
+        <div class="modal" id="modalBox">
+            <div id="modalMsg">Modal message</div>
+            <button class="modal-close" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+   <div class="bottom-nav">
+      <div  onclick="window.location.href='home.html'">🏠<br>Home</div>
+     <div  onclick="window.location.href='commnity.html'">👥<br>Community</div>
+     <div  onclick="window.location.href='profile.html'">👤<br>Profile</div>
+</div>
+
+    <script>
+        // Tab switching
+        function showTab(tab) {
+            document.getElementById('reportsTab').classList.toggle('active', tab === 'reports');
+            document.getElementById('leaderboardTab').classList.toggle('active', tab === 'leaderboard');
+            document.getElementById('reportsContent').style.display = tab === 'reports' ? 'block' : 'none';
+            document.getElementById('leaderboardContent').classList.toggle('active', tab === 'leaderboard');
+        }
+        // Modal for demo
+        function openModal(msg) {
+            document.getElementById('modalMsg').textContent = msg;
+            document.getElementById('modalBg').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalBg').style.display = 'none';
+        }
+        // Back button (for demo, just alert)
+        function goBack() {
+            // If timer page is visible, go back to community page
+            if (document.getElementById('timerPage').style.display === 'flex' || document.getElementById('timerPage').style.display === 'block') {
+                clearInterval(timerInterval);
+                document.getElementById('timerPage').style.display = 'none';
+                document.getElementById('communityPage').style.display = 'block';
+            } else {
+                alert('Back button pressed!');
+            }
+        }
+        // Bottom navigation functionality
+        function goHome() {
+            window.location.href = "home.html"; // Replace with your Home page
+        }
+
+        function goCommunity() {
+            document.getElementById('communityPage').style.display = 'block';
+            document.getElementById('timerPage').style.display = 'none';
+        }
+
+        function goProfile() {
+            window.location.href = "profile.html"; // Navigates to the profile page
+        }
+
+        // --- Timer Section JS ---
+        // Default contacts
+        let contacts = JSON.parse(localStorage.getItem('emergencyContacts')) || [{
+            name: "Sahil Chaudhari",
+            phone: "9579703377"
+        }, {
+            name: "Rohit Koli",
+            phone: "7020572471"
+        }];
+
+        let selectedMinutes = 10; // Default timer
+        let timerInterval = null;
+        let remainingSeconds = 0;
+        let totalSeconds = 0; // For animation
+
+        // Timer option selection
+        document.querySelectorAll('.timer-btn').forEach(btn => {
+            btn.onclick = function() {
+                document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedMinutes = parseInt(btn.getAttribute('data-minutes'));
+                document.getElementById('startBtn').textContent = `Start ${selectedMinutes} Minute Timer`;
+            };
+        });
+
+        function updateContactsDisplay() {
+            document.getElementById('contact-count').textContent = contacts.length;
+            document.getElementById('contact-names').textContent =
+                contacts.map(c => c.name).join(', ') + " will be notified";
+        }
+
+        function renderContactList() {
+            const list = document.getElementById('contactList');
+            list.innerHTML = '';
+            contacts.forEach((c) => {
+                const div = document.createElement('div');
+                div.textContent = `${c.name} (${c.phone})`;
+                list.appendChild(div);
+            });
+        }
+
+        // Show modal
+        if (document.getElementById('contactsBtn')) {
+            document.getElementById('contactsBtn').onclick = function() {
+                renderContactList();
+                document.getElementById('contactsModal').style.display = 'flex';
+            };
+        }
+        // Hide modal
+        if (document.getElementById('closeModalBtn')) {
+            document.getElementById('closeModalBtn').onclick = function() {
+                document.getElementById('contactsModal').style.display = 'none';
+            };
+        }
+        // Add contact
+        if (document.getElementById('addContactForm')) {
+            document.getElementById('addContactForm').onsubmit = function(e) {
+                e.preventDefault();
+                const name = document.getElementById('contactName').value.trim();
+                const phone = document.getElementById('contactPhone').value.trim();
+                if (name && phone) {
+                    contacts.push({
+                        name,
+                        phone
+                    });
+                    localStorage.setItem('emergencyContacts', JSON.stringify(contacts));
+                    renderContactList();
+                    updateContactsDisplay();
+                    document.getElementById('contactName').value = '';
+                    document.getElementById('contactPhone').value = '';
+                }
+            };
+        }
+        // Hide modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('contactsModal');
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        // Show timer page and start timer
+        if (document.getElementById('startBtn')) {
+            document.getElementById('startBtn').onclick = function() {
+                document.getElementById('communityPage').style.display = 'none';
+                document.getElementById('timerPage').style.display = 'flex';
+                document.getElementById('sosMsg').style.display = 'none';
+                startTimer();
+            };
+        }
+
+        // Timer logic for timer page
+        function startTimer() {
+            clearInterval(timerInterval);
+            remainingSeconds = selectedMinutes * 60;
+            totalSeconds = remainingSeconds;
+            updateTimerDisplay();
+            updateProgressCircle();
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                updateTimerDisplay();
+                updateProgressCircle();
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timerDisplay').textContent = "00:00";
+                    document.getElementById('sosMsg').style.display = 'block';
+                    setProgressCircle(0);
+                    // Here you can add actual SOS logic
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            if (remainingSeconds < 0) return;
+            const min = Math.floor(remainingSeconds / 60);
+            const sec = remainingSeconds % 60;
+            document.getElementById('timerDisplay').textContent =
+                `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        // --- Clock Animation ---
+        function updateProgressCircle() {
+            if (totalSeconds === 0) return setProgressCircle(0);
+            const percent = remainingSeconds / totalSeconds;
+            setProgressCircle(percent);
+        }
+
+        function setProgressCircle(percent) {
+            // Circumference = 2 * PI * r = 2 * 3.1416 * 80 = ~502.654825
+            const circle = document.getElementById('progressArc');
+            const circumference = 2 * Math.PI * 80;
+            circle.style.strokeDasharray = circumference;
+            circle.style.strokeDashoffset = (1 - percent) * circumference;
+        }
+
+        // Stop timer when "I'm Safe - Check In" is clicked
+        if (document.getElementById('checkinBtn')) {
+            document.getElementById('checkinBtn').onclick = function() {
+                clearInterval(timerInterval);
+                document.getElementById('timerDisplay').textContent = "Checked In!";
+                document.getElementById('sosMsg').style.display = 'none';
+                setProgressCircle(0);
+            };
+        }
+
+        // Initial display
+        if (typeof updateContactsDisplay === "function") updateContactsDisplay();
+
+        // Default tab
+        showTab('reports');
+    </script>
+</body>
+
+</html>
