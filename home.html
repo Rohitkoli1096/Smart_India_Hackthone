@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safe Route Lite</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f6ff; color: #222; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+    header h1 { font-size: 22px; font-weight: bold; color: #007bff; margin: 0; }
+    header h2 { font-size: 14px; color: #555; margin: 2px 0 0; }
+
+    .whatsapp-meta-logo {
+      width: 40px;
+      height: 40px;
+      background: #0576cc;
+      border-radius: 60%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: 0.3s;
+    }
+    .whatsapp-meta-logo:hover { transform: scale(1.1); }
+    .whatsapp-meta-logo:before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .whatsapp-meta-logo:after {
+      content: "";
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      bottom: 8px;
+      left: 14px;
+      transform: rotate(45deg);
+      border-radius: 1px;
+    }
+
+    .container { padding: 15px; }
+    .card { background: #fff; border-radius: 14px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); padding: 18px; margin-bottom: 20px; }
+    .card h3 { margin: 0 0 12px; font-size: 18px; font-weight: bold; }
+    .input-group { display: flex; flex-direction: column; gap: 12px; }
+    input { padding: 12px; border-radius: 8px; border: 1px solid #ccc; width: 100%; font-size: 15px; transition: 0.2s; }
+    input:focus { border-color: #007bff; outline: none; }
+    button { padding: 12px; background: #007bff; border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.3s; }
+    button:hover { background: #0056b3; }
+    .sos-card { background: #dc3545; color: #fff; text-align: center; padding: 30px; border-radius: 14px; cursor: pointer; margin-bottom: 20px; font-size: 20px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.15); transition: 0.3s; }
+    .sos-card:hover { background: #b52a38; transform: scale(1.02); }
+    .quick-actions { display: flex; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
+    .quick-action { background: #f8f9fa; flex: 1; text-align: center; padding: 18px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s; }
+    .quick-action:hover { background: #eaf3ff; transform: translateY(-3px); }
+    .recent-routes .route { padding: 14px; border-radius: 10px; background: #f8f9fa; margin-bottom: 10px; font-size: 15px; }
+    .route span { display: block; margin-top: 3px; }
+    .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+    .bottom-nav div { text-align: center; font-size: 14px; color: #666; cursor: pointer; transition: 0.2s; }
+    .bottom-nav div.active { color: #007bff; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Safe Route Lite</h1>
+      <h2>🌍 Find your safe route</h2>
+    </div>
+    <div class="whatsapp-meta-logo" onclick="window.location.href='profile.html'"></div>
+  </header>
+
+  <div class="container" id="homePage">
+    <div class="card">
+      <h3>🗺 Plan Your Route</h3>
+      <div class="input-group">
+        <input type="text" id="from" placeholder="From (Current location)" readonly>
+        <input type="text" id="to" placeholder="Where to?">
+        <button onclick="findRoute()">🔍 Find Safe Route</button>
+      </div>
+    </div>
+
+    <div class="sos-card" onclick="window.location.href='Emergency_sos.html'">
+      🚨 Emergency SOS <br><small>Tap for immediate help</small>
+    </div>
+
+    <div class="quick-actions">
+      <div class="quick-action" onclick="window.location.href='report.html'">⚠ Report<br>Unsafe Area</div>
+      <div class="quick-action" onclick="window.location.href='timer.html'">⏱ Start<br>Timer</div>
+    </div>
+
+    <div class="card recent-routes">
+      <h3>📍 Recent Routes</h3>
+      <div id="routesList"></div>
+    </div>
+  </div>
+
+<div class="bottom-nav">
+  <div class="active" onclick="window.location.href='index.html'">🏠<br>Home</div>
+  <div onclick="window.location.href='commnity.html'">👥<br>Community</div>
+  <div onclick="window.location.href='profile.html'">👤<br>Profile</div>
+</div>
+
+  <script>
+    const routesList = document.getElementById("routesList");
+    const fromInput = document.getElementById("from");
+
+    // Get user's current location
+    window.onload = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          fromInput.value = `${lat},${lng}`;
+        }, () => { fromInput.value = "Current Location"; });
+      } else { fromInput.value = "Current Location"; }
+
+      // Load saved routes
+      let saved = JSON.parse(localStorage.getItem("routes") || "[]");
+      saved.forEach(r => renderRoute(r.from, r.to, r.time, r.score));
+    };
+
+    function findRoute() {
+      let to = document.getElementById("to").value;
+      if (!to) { alert("⚠ Please enter a destination."); return; }
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          let from = `${pos.coords.latitude},${pos.coords.longitude}`;
+          let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          let score = Math.floor(Math.random() * 3) + 8;
+
+          // Save route for next page
+          localStorage.setItem("origin", from);
+          localStorage.setItem("destination", to);
+          localStorage.setItem("lastRoute", JSON.stringify({from, to, time, score}));
+
+          // Save in history
+          renderRoute(from, to, time, score);
+          saveRoute({from, to, time, score});
+
+          // Redirect to route options page
+          window.location.href = "route_options.html";
+        }, () => {
+          alert("⚠ Please allow location access.");
+        });
+      }
+    }
+
+    function renderRoute(from, to, time, score) {
+      let route = document.createElement("div");
+      route.className = "route";
+      route.innerHTML = `🟢 <b>${from} → ${to}</b><span>⭐ Safety Score: ${score}/10</span><span>🕒 ${time}</span>`;
+      routesList.prepend(route);
+    }
+
+    function saveRoute(route) {
+      let saved = JSON.parse(localStorage.getItem("routes") || "[]");
+      saved.push(route);
+      localStorage.setItem("routes", JSON.stringify(saved));
+    }
+  </script>
+</body>
+</html>
